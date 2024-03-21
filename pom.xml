@@ -22,9 +22,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
-    <kotlin.version>1.9.22</kotlin.version>
+    <kotlin.version>1.9.23</kotlin.version>
     <maven.version>3.9.6</maven.version>
     <gauge.java.version>0.10.3</gauge.java.version>
+    <kotest.version>5.8.1</kotest.version>
+    <mockk.version>1.13.10</mockk.version>
+    <junit.version>5.10.2</junit.version>
+    <logback.version>1.5.3</logback.version>
   </properties>
 
   <licenses>
@@ -81,7 +85,31 @@
       <artifactId>gauge-java</artifactId>
       <version>${gauge.java.version}</version>
     </dependency>
-<!--    <dependency>-->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.kotest</groupId>
+      <artifactId>kotest-assertions-core-jvm</artifactId>
+      <version>${kotest.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.mockk</groupId>
+      <artifactId>mockk-jvm</artifactId>
+      <version>${mockk.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!--    <dependency>-->
 <!--      <groupId>org.apache.maven.plugin-testing</groupId>-->
 <!--      <artifactId>maven-plugin-testing-harness</artifactId>-->
 <!--      <version>3.3.0</version>-->
