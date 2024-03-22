@@ -20,16 +20,16 @@ class FilesDriverTest {
 
     @Test
     @Disabled
-    fun testCollectMavenDependentJarURLs() {
+    fun testCollectMavenDependentJarPaths() {
         mockkStatic(Files::class) // In Java 17, there is a bug in mockk. https://github.com/mockk/mockk/issues/368#issuecomment-1223549420
         every { Files.walk(any<Path>()) } returns listOf(
             Path.of("foo.jar"),
             Path.of("bar.jar"),
             Path.of("this.is.not.jar.dummy")
         ).stream()
-        filesDriver.collectMavenDependentJarURLs() shouldBe listOf(
-            Path.of("foo.jar").toUri().toURL(),
-            Path.of("bar.jar").toUri().toURL(),
+        filesDriver.collectMavenDependentJarPaths() shouldBe listOf(
+            Path.of("foo.jar"),
+            Path.of("bar.jar"),
         )
     }
 }

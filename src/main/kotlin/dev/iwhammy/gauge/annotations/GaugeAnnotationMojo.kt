@@ -1,6 +1,7 @@
 package dev.iwhammy.gauge.annotations
 
 import dev.iwhammy.gauge.annotations.driver.FilesDriver
+import dev.iwhammy.gauge.annotations.driver.MavenLogOutputDriver
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
@@ -14,14 +15,16 @@ class GaugeAnnotationMojo() : AbstractMojo() {
     @Parameter(property = "project")
     private lateinit var project: MavenProject
 
-    private var filesDriver = FilesDriver()
+    private var filesDriver = FilesDriver(log)
+
+    private var outputPort = MavenLogOutputDriver(log)
 
     override fun execute() {
-        val mavenDependentJarUrls = filesDriver.collectMavenDependentJarURLs()
+        val mavenDependentJarUrls = filesDriver.collectMavenDependentJarPaths()
         val classpathElements = project.compileClasspathElements.map { Path.of(it) }
-        val loadedUrls = classpathElements.map { it.toUri().toURL() }.toTypedArray()
-            .plus(mavenDependentJarUrls.toTypedArray())
+        val loadedUrls = classpathElements.plus(mavenDependentJarUrls).map { it.toUri().toURL() }.toTypedArray()
         val urlClassLoader = URLClassLoader(loadedUrls)
-        classpathElements.forEach { classpath -> filesDriver.collectStepValues(classpath, urlClassLoader) }
+        filesDriver.collectStepValues(classpathElements, urlClassLoader)
+            .run { outputPort.output(this) }
     }
 }
