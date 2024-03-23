@@ -1,39 +1,44 @@
 package dev.iwhammy.gauge.annotations.driver
 
 import com.thoughtworks.gauge.Step
+import dev.iwhammy.gauge.annotations.InputPort
 import org.apache.maven.plugin.logging.Log
-import org.slf4j.LoggerFactory
 import java.net.URLClassLoader
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
-import java.util.stream.Stream
+import kotlin.streams.toList
 
-class FilesDriver(private val logger: Log) {
+class FilesDriver(private val logger: Log): InputPort {
 
-    fun collectMavenDependentJarPaths(path: Path = Path.of("${System.getProperty("user.home")}/.m2/repository")): List<Path> {
-        return Files.walk(path).filter { it.toString().endsWith("jar") }.toList()
+    override fun collectMavenDependentJarPaths(mavenRepositoryPath: Path): List<Path> {
+        return Files.walk(mavenRepositoryPath).filter { it.toString().endsWith("jar") }.toList()
     }
 
     fun collectStepValues(classpaths: List<Path>, urlClassLoader: URLClassLoader): List<String> {
+        // List<Path> ... classpaths list
+        // Path ... classpath
+        // return all paths which end with .class
+        // stream.forEach
+        // path -> className -> Class
+        // Class -> methods -> annotations
+
         val steps = mutableListOf<String>()
         classpaths.forEach { classpath ->
             try {
                 Files.newDirectoryStream(classpath).use { stream ->
                     stream.forEach { path ->
-                        if (Files.isDirectory(path)) {
-                            Files.walk(path)
-                                .filter { it.toString().endsWith("class") }
-                                .forEach { classFilePath ->
-                                    val className =
-                                        classFilePath.toString()
-                                            .removePrefix(classpath.toString())
-                                            .removeSuffix(".class")
-                                            .replace("/", ".").replaceFirst(".", "")
-                                    val clazz = urlClassLoader.loadClass(className)
-                                    steps.addAll(retrieveSteps(clazz))
-                                }
-                        }
+                        Files.walk(path)
+                            .filter { it.toString().endsWith("class") }
+                            .map { classFilePath ->
+                                val className =
+                                    classFilePath.toString()
+                                        .removePrefix(classpath.toString())
+                                        .removeSuffix(".class")
+                                        .replace("/", ".").replaceFirst(".", "")
+                                val clazz = urlClassLoader.loadClass(className)
+                                retrieveSteps(clazz)
+                            }.toList().flatten()
                     }
                 }
             } catch (e: NoSuchFileException) {

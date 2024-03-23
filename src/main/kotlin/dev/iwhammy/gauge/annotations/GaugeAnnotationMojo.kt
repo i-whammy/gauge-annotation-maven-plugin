@@ -15,12 +15,14 @@ class GaugeAnnotationMojo() : AbstractMojo() {
     @Parameter(property = "project")
     private lateinit var project: MavenProject
 
+    private val mavenRepositoryPath = Path.of("${System.getProperty("user.home")}/.m2/repository")
+
     private var filesDriver = FilesDriver(log)
 
     private var outputPort = MavenLogOutputDriver(log)
 
     override fun execute() {
-        val mavenDependentJarUrls = filesDriver.collectMavenDependentJarPaths()
+        val mavenDependentJarUrls = filesDriver.collectMavenDependentJarPaths(mavenRepositoryPath)
         val classpathElements = project.compileClasspathElements.map { Path.of(it) }
         val loadedUrls = classpathElements.plus(mavenDependentJarUrls).map { it.toUri().toURL() }.toTypedArray()
         val urlClassLoader = URLClassLoader(loadedUrls)
