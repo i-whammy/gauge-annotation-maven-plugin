@@ -27,7 +27,7 @@ class FilesDriverTest {
             Path.of("bar.jar"),
             Path.of("this.is.not.jar.dummy")
         ).stream()
-        filesDriver.collectMavenDependentJarPaths() shouldBe listOf(
+        filesDriver.collectMavenDependentJarPaths(Path.of("foo")) shouldBe listOf(
             Path.of("foo.jar"),
             Path.of("bar.jar"),
         )

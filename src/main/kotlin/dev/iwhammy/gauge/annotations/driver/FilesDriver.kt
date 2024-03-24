@@ -37,8 +37,8 @@ class FilesDriver(private val logger: Log): InputPort {
                                         .removeSuffix(".class")
                                         .replace("/", ".").replaceFirst(".", "")
                                 val clazz = urlClassLoader.loadClass(className)
-                                retrieveSteps(clazz)
-                            }.toList().flatten()
+                                steps.addAll(retrieveSteps(clazz))
+                            }.toList()
                     }
                 }
             } catch (e: NoSuchFileException) {
