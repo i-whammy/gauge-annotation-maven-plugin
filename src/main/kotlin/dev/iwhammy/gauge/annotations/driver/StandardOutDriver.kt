@@ -1,6 +1,6 @@
 package dev.iwhammy.gauge.annotations.driver
 
-import dev.iwhammy.gauge.annotations.OutputPort
+import dev.iwhammy.gauge.annotations.usecase.OutputPort
 
 class StandardOutDriver() : OutputPort {
     override fun output(steps: List<String>) {

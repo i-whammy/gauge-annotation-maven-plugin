@@ -1,6 +1,6 @@
 package dev.iwhammy.gauge.annotations.driver
 
-import dev.iwhammy.gauge.annotations.OutputPort
+import dev.iwhammy.gauge.annotations.usecase.OutputPort
 import org.apache.maven.plugin.logging.Log
 
 class MavenLogOutputDriver(private val logger: Log) : OutputPort {

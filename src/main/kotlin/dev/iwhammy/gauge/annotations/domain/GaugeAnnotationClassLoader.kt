@@ -1,19 +1,10 @@
-package dev.iwhammy.gauge.annotations.driver
+package dev.iwhammy.gauge.annotations.domain
 
 import com.thoughtworks.gauge.Step
-import dev.iwhammy.gauge.annotations.InputPort
-import org.apache.maven.plugin.logging.Log
 import java.net.URLClassLoader
-import java.nio.file.Files
-import java.nio.file.Path
 
-class FilesDriver(private val logger: Log) : InputPort {
-
-    override fun collectMavenDependentJarPaths(mavenRepositoryPath: Path): List<Path> {
-        return Files.walk(mavenRepositoryPath).filter { it.toString().endsWith("jar") }.toList()
-    }
-
-    fun collectStepValues(classNames: List<String>, urlClassLoader: URLClassLoader): List<String> {
+class GaugeAnnotationClassLoader(private val urlClassLoader: URLClassLoader) {
+    fun collectAnnotationValues(classNames: List<String>): List<String> {
         val steps = mutableListOf<String>()
         classNames.forEach { className ->
             try {
@@ -26,9 +17,21 @@ class FilesDriver(private val logger: Log) : InputPort {
                     .map { it.joinToString(",") }
                     .forEach { steps.add(it) }
             } catch (e: ClassNotFoundException) {
-                println(e.message)
+                println("$e ${e.message}")
             }
         }
         return steps
+    }
+}
+
+class GaugeAnnotationClassLoaderFactory {
+    fun get(
+        compileClasspaths: List<CompileClasspath>,
+        mavenRepositoryPath: MavenRepositoryPath
+    ): GaugeAnnotationClassLoader {
+        return compileClasspaths.map { it.urlOf() }
+            .plus(mavenRepositoryPath.mavenDependentJarUrls())
+            .toTypedArray()
+            .let { GaugeAnnotationClassLoader(URLClassLoader(it)) }
     }
 }
