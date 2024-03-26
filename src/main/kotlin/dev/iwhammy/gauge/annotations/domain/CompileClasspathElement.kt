@@ -32,7 +32,7 @@ fun Path.collectClassNames(): List<String> {
             }
         }
     } catch (e: NoSuchFileException) {
-        println("$e ${e.message}")
+        println("$e")
         return emptyList()
     }
 }

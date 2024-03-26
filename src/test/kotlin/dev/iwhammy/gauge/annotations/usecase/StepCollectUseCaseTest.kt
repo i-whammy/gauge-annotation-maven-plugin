@@ -46,7 +46,7 @@ class StepCollectUseCaseTest {
         val classNames = listOf("dummy.class")
         val stepValues = listOf("Some step")
         val mavenRepositoryPath = mockk<MavenRepositoryPath>()
-        val compileClasspaths = mockk<List<CompileClasspath>>()
+        val compileClasspaths = listOf(mockk<CompileClasspath>())
         val gaugeAnnotationClassLoader = mockk<GaugeAnnotationClassLoader>()
 
         every { mavenProjectConfig.mavenRepositoryPath } returns repoPath
@@ -59,8 +59,8 @@ class StepCollectUseCaseTest {
                 mavenRepositoryPath
             )
         } returns gaugeAnnotationClassLoader
-        mockkConstructor(CompileClasspath::class)
-        every { anyConstructed<CompileClasspath>().collectClassNamesInPath() } returns classNames
+        mockkStatic(List<CompileClasspath>::collectClassNamesInPath)
+        every { compileClasspaths.collectClassNamesInPath() } returns classNames
         every { gaugeAnnotationClassLoader.collectAnnotationValues(classNames) } returns stepValues
         every { outputPort.output(stepValues) } just Runs
         stepCollectUseCase.execute()
