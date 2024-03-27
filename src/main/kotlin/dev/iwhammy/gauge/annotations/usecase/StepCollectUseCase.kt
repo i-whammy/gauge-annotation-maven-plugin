@@ -14,13 +14,13 @@ class StepCollectUseCase(
     private val gaugeAnnotationClassLoaderFactory: GaugeAnnotationClassLoaderFactory,
 ) {
     fun execute() {
-        val mavenRepositoryPath = mavenRepositoryPathFactory.get(mavenProjectConfig.mavenRepositoryPath)
-        val compileClasspaths = compileClasspathFactory.get(mavenProjectConfig.compileClasspaths)
+        val mavenRepositoryPath = mavenRepositoryPathFactory.create(mavenProjectConfig.mavenRepositoryPath)
+        val compileClasspaths = compileClasspathFactory.create(mavenProjectConfig.compileClasspaths)
         val classNames = compileClasspaths.collectClassNamesInPath()
         mavenRepositoryPath
-            .let { gaugeAnnotationClassLoaderFactory.get(compileClasspaths, it) }
+            .let { gaugeAnnotationClassLoaderFactory.create(compileClasspaths, it) }
             .collectAnnotationValues(classNames)
             .takeIf { it.isNotEmpty() }
-            ?.let { outputPort.output(it) }
+            ?.let { outputPort.output(it, mavenProjectConfig.basedir) }
     }
 }

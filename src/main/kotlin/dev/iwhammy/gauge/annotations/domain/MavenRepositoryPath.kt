@@ -5,7 +5,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 class MavenRepositoryPathFactory {
-    fun get(path: String) = MavenRepositoryPath(Path.of(path))
+    fun create(path: String) = MavenRepositoryPath(Path.of(path))
 }
 
 data class MavenRepositoryPath(private val path: Path) {

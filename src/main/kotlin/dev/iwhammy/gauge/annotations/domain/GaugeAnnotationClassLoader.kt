@@ -25,7 +25,7 @@ class GaugeAnnotationClassLoader(private val urlClassLoader: URLClassLoader) {
 }
 
 class GaugeAnnotationClassLoaderFactory {
-    fun get(
+    fun create(
         compileClasspaths: List<CompileClasspath>,
         mavenRepositoryPath: MavenRepositoryPath
     ): GaugeAnnotationClassLoader {

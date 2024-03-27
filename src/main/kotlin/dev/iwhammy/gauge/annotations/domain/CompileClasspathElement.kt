@@ -14,7 +14,7 @@ data class CompileClasspath(private val classpath: String) {
 fun List<CompileClasspath>.collectClassNamesInPath(): List<String> = this.flatMap { it.collectClassNamesInPath() }
 
 class CompileClasspathFactory {
-    fun get(classpaths: List<String>) = classpaths.map { CompileClasspath(it) }
+    fun create(classpaths: List<String>) = classpaths.map { CompileClasspath(it) }
 }
 
 fun Path.collectClassNames(): List<String> {

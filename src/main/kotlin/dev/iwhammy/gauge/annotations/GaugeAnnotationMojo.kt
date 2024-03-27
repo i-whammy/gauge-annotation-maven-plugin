@@ -4,6 +4,7 @@ import dev.iwhammy.gauge.annotations.domain.CompileClasspathFactory
 import dev.iwhammy.gauge.annotations.domain.GaugeAnnotationClassLoaderFactory
 import dev.iwhammy.gauge.annotations.domain.MavenRepositoryPathFactory
 import dev.iwhammy.gauge.annotations.driver.MarkDownOutDriver
+import dev.iwhammy.gauge.annotations.usecase.OutputPort
 import dev.iwhammy.gauge.annotations.usecase.StepCollectUseCase
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.LifecyclePhase
@@ -24,11 +25,12 @@ class GaugeAnnotationMojo() : AbstractMojo() {
     private val compileClasspathFactory: CompileClasspathFactory = CompileClasspathFactory()
     private val gaugeAnnotationClassLoaderFactory: GaugeAnnotationClassLoaderFactory =
         GaugeAnnotationClassLoaderFactory()
+    private val outputPort: OutputPort = MarkDownOutDriver()
 
     override fun execute() {
         val mavenProjectConfig = MavenProjectConfig.of(mavenRepositoryPath, project)
         StepCollectUseCase(
-            MarkDownOutDriver(mavenProjectConfig.basedir.resolve("steps.md")),
+            outputPort,
             mavenProjectConfig,
             mavenRepositoryPathFactory,
             compileClasspathFactory,
@@ -44,7 +46,7 @@ class MavenProjectConfig private constructor(
 ) {
     companion object {
         fun of(mavenRepositoryPath: String, project: MavenProject): MavenProjectConfig {
-            return MavenProjectConfig(mavenRepositoryPath, project.compileClasspathElements, project.basedir.toPath())
+            return MavenProjectConfig(mavenRepositoryPath, project.compileClasspathElements, project.basedir.toPath().resolve("steps.md"))
         }
     }
 }

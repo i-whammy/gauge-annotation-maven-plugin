@@ -8,6 +8,7 @@ import io.mockk.impl.annotations.MockK
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.nio.file.Path
 
 class StepCollectUseCaseTest {
 
@@ -47,14 +48,16 @@ class StepCollectUseCaseTest {
         val stepValues = listOf("Some step")
         val mavenRepositoryPath = mockk<MavenRepositoryPath>()
         val compileClasspaths = listOf(mockk<CompileClasspath>())
+        val basedir = mockk<Path>()
         val gaugeAnnotationClassLoader = mockk<GaugeAnnotationClassLoader>()
 
         every { mavenProjectConfig.mavenRepositoryPath } returns repoPath
         every { mavenProjectConfig.compileClasspaths } returns compileClasspathElements
-        every { compileClasspathFactory.get(compileClasspathElements) } returns compileClasspaths
-        every { mavenRepositoryPathFactory.get(repoPath) } returns mavenRepositoryPath
+        every { mavenProjectConfig.basedir } returns basedir
+        every { compileClasspathFactory.create(compileClasspathElements) } returns compileClasspaths
+        every { mavenRepositoryPathFactory.create(repoPath) } returns mavenRepositoryPath
         every {
-            gaugeAnnotationClassLoaderFactory.get(
+            gaugeAnnotationClassLoaderFactory.create(
                 compileClasspaths,
                 mavenRepositoryPath
             )
@@ -62,16 +65,16 @@ class StepCollectUseCaseTest {
         mockkStatic(List<CompileClasspath>::collectClassNamesInPath)
         every { compileClasspaths.collectClassNamesInPath() } returns classNames
         every { gaugeAnnotationClassLoader.collectAnnotationValues(classNames) } returns stepValues
-        every { outputPort.output(stepValues) } just Runs
+        every { outputPort.output(stepValues, basedir) } just Runs
         stepCollectUseCase.execute()
         verify {
-            compileClasspathFactory.get(compileClasspathElements)
-            mavenRepositoryPathFactory.get(repoPath)
-            gaugeAnnotationClassLoaderFactory.get(
+            compileClasspathFactory.create(compileClasspathElements)
+            mavenRepositoryPathFactory.create(repoPath)
+            gaugeAnnotationClassLoaderFactory.create(
                 compileClasspaths,
                 mavenRepositoryPath
             )
-            outputPort.output(stepValues)
+            outputPort.output(stepValues, basedir)
         }
     }
 }
