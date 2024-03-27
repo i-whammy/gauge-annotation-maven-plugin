@@ -15,7 +15,7 @@ class StepCollectUseCase(
 ) {
     fun execute() {
         val mavenRepositoryPath = mavenRepositoryPathFactory.get(mavenProjectConfig.mavenRepositoryPath)
-        val compileClasspaths = compileClasspathFactory.get(mavenProjectConfig.compileClasspathElements)
+        val compileClasspaths = compileClasspathFactory.get(mavenProjectConfig.compileClasspaths)
         val classNames = compileClasspaths.collectClassNamesInPath()
         mavenRepositoryPath
             .let { gaugeAnnotationClassLoaderFactory.get(compileClasspaths, it) }

@@ -8,8 +8,10 @@ class MavenRepositoryPathFactory {
     fun get(path: String) = MavenRepositoryPath(Path.of(path))
 }
 
-data class MavenRepositoryPath(val path: Path) {
+data class MavenRepositoryPath(private val path: Path) {
     fun mavenDependentJarUrls(): List<URL> {
-        return Files.walk(this.path).filter { it.toString().endsWith("jar") }.map { it.toUri().toURL() }.toList()
+        return Files.walk(this.path)
+            .filter { it.toString().endsWith("jar") }
+            .map { it.toUri().toURL() }.toList()
     }
 }

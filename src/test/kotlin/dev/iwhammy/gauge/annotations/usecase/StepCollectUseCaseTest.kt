@@ -50,7 +50,7 @@ class StepCollectUseCaseTest {
         val gaugeAnnotationClassLoader = mockk<GaugeAnnotationClassLoader>()
 
         every { mavenProjectConfig.mavenRepositoryPath } returns repoPath
-        every { mavenProjectConfig.compileClasspathElements } returns compileClasspathElements
+        every { mavenProjectConfig.compileClasspaths } returns compileClasspathElements
         every { compileClasspathFactory.get(compileClasspathElements) } returns compileClasspaths
         every { mavenRepositoryPathFactory.get(repoPath) } returns mavenRepositoryPath
         every {
