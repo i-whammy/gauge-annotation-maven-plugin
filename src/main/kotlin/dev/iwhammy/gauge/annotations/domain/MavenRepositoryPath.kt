@@ -1,17 +1,38 @@
 package dev.iwhammy.gauge.annotations.domain
 
+import java.io.IOException
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.stream.Stream
 
 class MavenRepositoryPathFactory {
-    fun create(path: String) = MavenRepositoryPath(Path.of(path))
+    fun create(path: String): MavenRepositoryPath {
+        return runCatching { Path.of(path) }
+            .fold(
+                { p: Path -> MavenRepositoryPath(p) },
+                { e: Throwable -> throw MavenRepositoryPathCreation(e) }
+            )
+    }
 }
 
 data class MavenRepositoryPath(private val path: Path) {
     fun mavenDependentJarUrls(): List<URL> {
-        return Files.walk(this.path)
-            .filter { it.toString().endsWith("jar") }
-            .map { it.toUri().toURL() }.toList()
+        return runCatching { Files.walk(this.path) }
+            .fold(
+                { stream: Stream<Path> ->
+                    stream
+                        .filter { it.toString().endsWith("jar") }
+                        .map { it.toUri().toURL() }.toList()
+                },
+                { e: Throwable ->
+                    when (e) {
+                        is IOException -> throw e
+                        else -> throw RuntimeException(e)
+                    }
+                }
+            )
     }
 }
+
+class MavenRepositoryPathCreation(e: Throwable) : Exception()
