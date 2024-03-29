@@ -1,10 +1,7 @@
 package dev.iwhammy.gauge.annotations.usecase
 
 import dev.iwhammy.gauge.annotations.MavenProjectConfig
-import dev.iwhammy.gauge.annotations.domain.CompileClasspathFactory
-import dev.iwhammy.gauge.annotations.domain.GaugeAnnotationClassLoaderFactory
-import dev.iwhammy.gauge.annotations.domain.MavenRepositoryPathFactory
-import dev.iwhammy.gauge.annotations.domain.collectClassNamesInPath
+import dev.iwhammy.gauge.annotations.domain.*
 
 class StepCollectUseCase(
     private val outputPort: OutputPort,
@@ -20,7 +17,7 @@ class StepCollectUseCase(
         mavenRepositoryPath
             .let { gaugeAnnotationClassLoaderFactory.create(compileClasspaths, it) }
             .collectAnnotationValues(classNames)
-            .takeIf { it.isNotEmpty() }
-            ?.let { outputPort.output(it, mavenProjectConfig.basedir) }
+            .filterUsed()
+            .let { outputPort.output(it, mavenProjectConfig.basedir) }
     }
 }

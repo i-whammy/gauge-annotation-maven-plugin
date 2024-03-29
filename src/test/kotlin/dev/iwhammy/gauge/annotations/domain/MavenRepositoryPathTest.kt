@@ -41,18 +41,10 @@ class MavenRepositoryPathTest {
 
     @Disabled("Enable this test when mockkStatic is available in JDK21")
     @Test
-    fun testMavenDependentJarUrlsThrowsIOException() {
-        val path = Path.of("for.testing.of.io.exception")
-        every { Files.walk(path) } throws IOException("This is test.")
-        shouldThrow<IOException> { MavenRepositoryPath(path).mavenDependentJarUrls() }
-    }
-
-    @Disabled("Enable this test when mockkStatic is available in JDK21")
-    @Test
-    fun testMavenDependentJarUrlsThrowsAnyOtherExceptions() {
+    fun testMavenDependentJarUrlsThrowsExceptions() {
         val path = Path.of("for.testing.of.some.exception")
-        every { Files.walk(path) } throws RuntimeException("This is test.")
+        every { Files.walk(path) } throws IOException("This is test.")
         val expected = shouldThrow<RuntimeException> { MavenRepositoryPath(path).mavenDependentJarUrls() }
-        expected.cause?.shouldNotBeInstanceOf<IOException>()
+        expected.cause?.shouldBeInstanceOf<IOException>()
     }
 }

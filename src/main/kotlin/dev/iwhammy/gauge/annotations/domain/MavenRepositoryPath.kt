@@ -1,6 +1,5 @@
 package dev.iwhammy.gauge.annotations.domain
 
-import java.io.IOException
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
@@ -26,10 +25,7 @@ data class MavenRepositoryPath(private val path: Path) {
                         .map { it.toUri().toURL() }.toList()
                 },
                 { e: Throwable ->
-                    when (e) {
-                        is IOException -> throw e
-                        else -> throw RuntimeException(e)
-                    }
+                    throw RuntimeException(e)
                 }
             )
     }

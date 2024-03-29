@@ -5,23 +5,17 @@ import java.net.URLClassLoader
 import kotlin.reflect.KClass
 
 class GaugeAnnotationClassLoader(private val urlClassLoader: URLClassLoader) {
-    fun collectAnnotationValues(classNames: List<String>, collectingTargetClass: KClass<*> = Step::class): List<String> {
-        val steps = mutableListOf<String>()
+    fun collectAnnotationValues(classNames: List<String>, collectingTargetClass: KClass<*> = Step::class): List<GaugeUsage> {
+        val gaugeUsages = mutableListOf<GaugeUsage>()
         classNames.forEach { className ->
             try {
                 val clazz = urlClassLoader.loadClass(className)
-                val targetAnnotation = clazz.classLoader.loadClass(collectingTargetClass.qualifiedName)
-                clazz.declaredMethods
-                    .filter { method -> method.annotations.any { it.annotationClass.qualifiedName == collectingTargetClass.qualifiedName } }
-                    .map { method -> method.getDeclaredAnnotation(targetAnnotation as Class<out Annotation>) }
-                    .map { (targetAnnotation.getMethod("value").invoke(it) as Array<*>) }
-                    .map { it.joinToString(",") }
-                    .forEach { steps.add(it) }
+                gaugeUsages.add(clazz.loadGaugeUsage())
             } catch (e: ClassNotFoundException) {
                 println("$e ${e.message}")
             }
         }
-        return steps
+        return gaugeUsages
     }
 }
 

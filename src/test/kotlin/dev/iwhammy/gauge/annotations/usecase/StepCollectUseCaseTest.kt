@@ -47,7 +47,15 @@ class StepCollectUseCaseTest {
         val repoPath = "path.for.repo"
         val compileClasspathElements = listOf("classpath.elements")
         val classNames = listOf("dummy.class")
-        val stepValues = listOf("Some step")
+        val stepValues = listOf(
+            GaugeUsage("some.class.used", listOf(
+                GaugeUsedMethod("someMethod", listOf(
+                    mockk()
+                ))
+            )),
+            GaugeUsage("some.class.not.used", listOf(
+            )),
+            )
         val mavenRepositoryPath = mockk<MavenRepositoryPath>()
         val compileClasspaths = listOf(mockk<CompileClasspath>())
         val basedir = mockk<Path>()
