@@ -11,7 +11,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
-import java.nio.file.Path
 
 @Mojo(name = "gauge-annotation", defaultPhase = LifecyclePhase.PACKAGE)
 class GaugeAnnotationMojo() : AbstractMojo() {
@@ -42,11 +41,10 @@ class GaugeAnnotationMojo() : AbstractMojo() {
 class MavenProjectConfig private constructor(
     val mavenRepositoryPath: String,
     val compileClasspaths: List<String>,
-    val basedir: Path,
 ) {
     companion object {
         fun of(mavenRepositoryPath: String, project: MavenProject): MavenProjectConfig {
-            return MavenProjectConfig(mavenRepositoryPath, project.compileClasspathElements, project.basedir.toPath().resolve("steps.md"))
+            return MavenProjectConfig(mavenRepositoryPath, project.compileClasspathElements)
         }
     }
 }

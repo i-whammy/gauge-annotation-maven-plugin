@@ -3,8 +3,10 @@ package dev.iwhammy.gauge.annotations.domain
 import com.thoughtworks.gauge.Step
 
 data class GaugeProjectUsage(val classes: List<GaugeClassUsage>) {
+    fun hasUsage() = this.steps().isNotEmpty()
     fun steps() = this.classes.flatMap { it.gaugeUsedMethods.flatMap { it.entries.flatMap { it.annotationValues } } }
 }
+
 data class GaugeClassUsage(val className: String, val gaugeUsedMethods: List<GaugeUsedMethod>)
 data class GaugeUsedMethod(val methodName: String, val entries: List<GaugeAnnotationEntry>)
 data class GaugeAnnotationEntry(val gaugeAnnotationClass: Class<*>, val annotationValues: List<String>)

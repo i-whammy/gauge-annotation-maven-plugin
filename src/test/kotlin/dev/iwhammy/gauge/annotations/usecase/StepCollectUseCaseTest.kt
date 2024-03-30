@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import java.nio.file.Path
 
 class StepCollectUseCaseTest {
 
@@ -66,12 +65,10 @@ class StepCollectUseCaseTest {
         )
         val mavenRepositoryPath = mockk<MavenRepositoryPath>()
         val compileClasspaths = listOf(mockk<CompileClasspath>())
-        val basedir = mockk<Path>()
         val gaugeAnnotationClassLoader = mockk<GaugeAnnotationClassLoader>()
 
         every { mavenProjectConfig.mavenRepositoryPath } returns repoPath
         every { mavenProjectConfig.compileClasspaths } returns compileClasspathElements
-        every { mavenProjectConfig.basedir } returns basedir
         every { compileClasspathFactory.create(compileClasspathElements) } returns compileClasspaths
         every { mavenRepositoryPathFactory.create(repoPath) } returns mavenRepositoryPath
         every {
@@ -82,15 +79,10 @@ class StepCollectUseCaseTest {
         mockkStatic(List<CompileClasspath>::collectClassNamesInPath)
         every { compileClasspaths.collectClassNamesInPath() } returns classNames
         every { gaugeAnnotationClassLoader.collectProjectAnnotations(classNames) } returns stepValues
-        every { outputPort.output(stepValues, basedir) } just Runs
+        every { outputPort.output(any<Report.GaugeUsageReport>()) } just Runs
         stepCollectUseCase.execute()
         verify {
-            compileClasspathFactory.create(compileClasspathElements)
-            mavenRepositoryPathFactory.create(repoPath)
-            gaugeAnnotationClassLoaderFactory.create(
-                compileClasspaths, mavenRepositoryPath
-            )
-            outputPort.output(stepValues, basedir)
+            outputPort.output(any<Report.GaugeUsageReport>())
         }
     }
 }

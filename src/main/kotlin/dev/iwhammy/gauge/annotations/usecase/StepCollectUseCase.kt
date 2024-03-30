@@ -14,10 +14,13 @@ class StepCollectUseCase(
         val mavenRepositoryPath = mavenRepositoryPathFactory.create(mavenProjectConfig.mavenRepositoryPath)
         val compileClasspaths = compileClasspathFactory.create(mavenProjectConfig.compileClasspaths)
         val classNames = compileClasspaths.collectClassNamesInPath()
-        mavenRepositoryPath
+        val report = mavenRepositoryPath
             .let { gaugeAnnotationClassLoaderFactory.create(compileClasspaths, it) }
             .collectProjectAnnotations(classNames)
-            .filterUsed()
-            .let { outputPort.output(it, mavenProjectConfig.basedir) }
+            .let { Report.of(it) }
+        when (report) {
+            is Report.GaugeUsageReport -> outputPort.output(report)
+            else -> return
+        }
     }
 }

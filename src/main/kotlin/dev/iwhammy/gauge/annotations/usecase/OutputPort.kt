@@ -1,8 +1,7 @@
 package dev.iwhammy.gauge.annotations.usecase
 
-import dev.iwhammy.gauge.annotations.domain.GaugeProjectUsage
-import java.nio.file.Path
+import dev.iwhammy.gauge.annotations.domain.Report
 
 interface OutputPort {
-    fun output(gaugeProjectUsage: GaugeProjectUsage, destination: Path)
+    fun output(gaugeUsageReport: Report.GaugeUsageReport)
 }
