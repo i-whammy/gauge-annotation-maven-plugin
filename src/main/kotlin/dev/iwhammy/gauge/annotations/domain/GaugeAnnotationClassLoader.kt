@@ -5,17 +5,17 @@ import java.net.URLClassLoader
 import kotlin.reflect.KClass
 
 class GaugeAnnotationClassLoader(private val urlClassLoader: URLClassLoader) {
-    fun collectAnnotationValues(classNames: List<String>, collectingTargetClass: KClass<*> = Step::class): List<GaugeUsage> {
-        val gaugeUsages = mutableListOf<GaugeUsage>()
+    fun collectProjectAnnotations(classNames: List<String>, collectingTargetClass: KClass<*> = Step::class): GaugeProjectUsage {
+        val gaugeClassUsages = mutableListOf<GaugeClassUsage>()
         classNames.forEach { className ->
             try {
                 val clazz = urlClassLoader.loadClass(className)
-                gaugeUsages.add(clazz.loadGaugeUsage())
+                gaugeClassUsages.add(clazz.loadGaugeUsage())
             } catch (e: ClassNotFoundException) {
                 println("$e ${e.message}")
             }
         }
-        return gaugeUsages
+        return GaugeProjectUsage(gaugeClassUsages)
     }
 }
 

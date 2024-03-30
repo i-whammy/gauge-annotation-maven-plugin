@@ -1,14 +1,14 @@
 package dev.iwhammy.gauge.annotations.driver
 
-import dev.iwhammy.gauge.annotations.domain.GaugeUsage
+import dev.iwhammy.gauge.annotations.domain.GaugeProjectUsage
 import dev.iwhammy.gauge.annotations.usecase.OutputPort
 import jakarta.json.Json
 import jakarta.json.JsonObject
 import java.nio.file.Path
 
-class StandardOutDriver() : OutputPort {
-    override fun output(gaugeUsages: List<GaugeUsage>, destination: Path) {
-        gaugeUsages.forEach { println(it.toOutput().toJson()) }
+class JsonStandardOutputDriver() : OutputPort {
+    override fun output(gaugeProjectUsage: GaugeProjectUsage, destination: Path) {
+        gaugeProjectUsage.steps().also { println(GaugeUsageOutput(it).toJson()) }
     }
 
     data class GaugeUsageOutput(val steps: List<String>) {
@@ -23,7 +23,4 @@ class StandardOutDriver() : OutputPort {
                 .build()
         }
     }
-
-    private fun GaugeUsage.toOutput() =
-        this.gaugeUsedMethods.map { it.entries.flatMap { it.annotationValues } }.flatten().let(::GaugeUsageOutput)
 }

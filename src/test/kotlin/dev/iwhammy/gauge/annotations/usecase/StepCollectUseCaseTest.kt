@@ -47,15 +47,23 @@ class StepCollectUseCaseTest {
         val repoPath = "path.for.repo"
         val compileClasspathElements = listOf("classpath.elements")
         val classNames = listOf("dummy.class")
-        val stepValues = listOf(
-            GaugeUsage("some.class.used", listOf(
-                GaugeUsedMethod("someMethod", listOf(
-                    mockk()
-                ))
-            )),
-            GaugeUsage("some.class.not.used", listOf(
-            )),
+        val stepValues = GaugeProjectUsage(
+            listOf(
+                GaugeClassUsage(
+                    "some.class.used", listOf(
+                        GaugeUsedMethod(
+                            "someMethod", listOf(
+                                mockk()
+                            )
+                        )
+                    )
+                ),
+                GaugeClassUsage(
+                    "some.class.not.used", listOf(
+                    )
+                ),
             )
+        )
         val mavenRepositoryPath = mockk<MavenRepositoryPath>()
         val compileClasspaths = listOf(mockk<CompileClasspath>())
         val basedir = mockk<Path>()
@@ -68,21 +76,19 @@ class StepCollectUseCaseTest {
         every { mavenRepositoryPathFactory.create(repoPath) } returns mavenRepositoryPath
         every {
             gaugeAnnotationClassLoaderFactory.create(
-                compileClasspaths,
-                mavenRepositoryPath
+                compileClasspaths, mavenRepositoryPath
             )
         } returns gaugeAnnotationClassLoader
         mockkStatic(List<CompileClasspath>::collectClassNamesInPath)
         every { compileClasspaths.collectClassNamesInPath() } returns classNames
-        every { gaugeAnnotationClassLoader.collectAnnotationValues(classNames) } returns stepValues
+        every { gaugeAnnotationClassLoader.collectProjectAnnotations(classNames) } returns stepValues
         every { outputPort.output(stepValues, basedir) } just Runs
         stepCollectUseCase.execute()
         verify {
             compileClasspathFactory.create(compileClasspathElements)
             mavenRepositoryPathFactory.create(repoPath)
             gaugeAnnotationClassLoaderFactory.create(
-                compileClasspaths,
-                mavenRepositoryPath
+                compileClasspaths, mavenRepositoryPath
             )
             outputPort.output(stepValues, basedir)
         }

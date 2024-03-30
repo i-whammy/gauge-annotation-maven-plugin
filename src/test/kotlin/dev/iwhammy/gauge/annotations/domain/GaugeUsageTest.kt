@@ -8,7 +8,7 @@ class GaugeUsageTest {
 
     @Test
     fun testLoadGaugeUsage() {
-        DummyForTest::class.java.loadGaugeUsage() shouldBe GaugeUsage(
+        DummyForTest::class.java.loadGaugeUsage() shouldBe GaugeClassUsage(
             DummyForTest::class.qualifiedName!!, listOf(
                 GaugeUsedMethod(
                     "annotated", listOf(
@@ -21,7 +21,7 @@ class GaugeUsageTest {
 
     @Test
     fun testLoadGaugeUsageWhenNoGaugeAnnotations() {
-        NonGaugeUsedClass::class.java.loadGaugeUsage() shouldBe GaugeUsage(
+        NonGaugeUsedClass::class.java.loadGaugeUsage() shouldBe GaugeClassUsage(
             NonGaugeUsedClass::class.qualifiedName!!, listOf()
         )
     }

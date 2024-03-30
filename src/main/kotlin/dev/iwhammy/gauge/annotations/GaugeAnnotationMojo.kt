@@ -3,8 +3,7 @@ package dev.iwhammy.gauge.annotations
 import dev.iwhammy.gauge.annotations.domain.CompileClasspathFactory
 import dev.iwhammy.gauge.annotations.domain.GaugeAnnotationClassLoaderFactory
 import dev.iwhammy.gauge.annotations.domain.MavenRepositoryPathFactory
-import dev.iwhammy.gauge.annotations.driver.MarkDownOutDriver
-import dev.iwhammy.gauge.annotations.driver.StandardOutDriver
+import dev.iwhammy.gauge.annotations.driver.JsonStandardOutputDriver
 import dev.iwhammy.gauge.annotations.usecase.OutputPort
 import dev.iwhammy.gauge.annotations.usecase.StepCollectUseCase
 import org.apache.maven.plugin.AbstractMojo
@@ -26,7 +25,7 @@ class GaugeAnnotationMojo() : AbstractMojo() {
     private val compileClasspathFactory: CompileClasspathFactory = CompileClasspathFactory()
     private val gaugeAnnotationClassLoaderFactory: GaugeAnnotationClassLoaderFactory =
         GaugeAnnotationClassLoaderFactory()
-    private val outputPort: OutputPort = StandardOutDriver()
+    private val outputPort: OutputPort = JsonStandardOutputDriver()
 
     override fun execute() {
         val mavenProjectConfig = MavenProjectConfig.of(mavenRepositoryPath, project)
