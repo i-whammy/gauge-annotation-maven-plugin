@@ -23,13 +23,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <kotlin>1.9.23</kotlin>
-        <maven>3.9.6</maven>
-        <gauge.java>0.10.3</gauge.java>
+        <kotlin>2.1.0</kotlin>
+        <maven>3.9.8</maven>
+        <gauge.java>0.11.2</gauge.java>
         <kotest>5.8.1</kotest>
         <mockk>1.13.10</mockk>
         <junit>5.10.2</junit>
-        <logback>1.5.3</logback>
+        <logback>1.5.6</logback>
         <json.api>2.1.3</json.api>
         <parsson>1.1.5</parsson>
     </properties>
