@@ -58,8 +58,7 @@ class StepCollectUseCaseTest {
                     )
                 ),
                 GaugeClassUsage(
-                    "some.class.not.used", listOf(
-                    )
+                    "some.class.not.used", emptyList()
                 ),
             )
         )

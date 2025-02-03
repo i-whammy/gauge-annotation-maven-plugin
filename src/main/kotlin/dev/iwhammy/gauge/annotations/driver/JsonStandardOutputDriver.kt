@@ -10,16 +10,16 @@ class JsonStandardOutputDriver() : OutputPort {
         gaugeUsageReport.usage.steps().also { println(GaugeUsageOutput(it).toJson()) }
     }
 
-    data class GaugeUsageOutput(val steps: List<String>) {
-        fun toJson(): JsonObject {
-            val arrayBuilder = Json.createArrayBuilder()
-            steps.forEach {
-                arrayBuilder.add(it)
-            }
+    data class GaugeUsageOutput(val steps: List<String>)
+}
 
-            return Json.createObjectBuilder()
-                .add("steps", arrayBuilder.build())
-                .build()
-        }
+fun JsonStandardOutputDriver.GaugeUsageOutput.toJson(): JsonObject {
+    val arrayBuilder = Json.createArrayBuilder()
+    steps.forEach {
+        arrayBuilder.add(it)
     }
+
+    return Json.createObjectBuilder()
+        .add("steps", arrayBuilder.build())
+        .build()
 }

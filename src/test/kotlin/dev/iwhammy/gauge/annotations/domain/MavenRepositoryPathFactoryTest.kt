@@ -7,7 +7,6 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.nio.file.Path
@@ -24,7 +23,6 @@ class MavenRepositoryPathFactoryTest {
         unmockkAll()
     }
 
-    @Disabled("Enable this test when mockkStatic is available in JDK21")
     @Test
     fun testWhenInvalidPathWasGiven() {
         val invalidPath = "/somewhere/invalid"

@@ -3,14 +3,12 @@ package dev.iwhammy.gauge.annotations.domain
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.kotest.matchers.types.shouldNotBeInstanceOf
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import java.io.IOException
@@ -30,7 +28,6 @@ class MavenRepositoryPathTest {
         unmockkAll()
     }
 
-    @Disabled("Enable this test when mockkStatic is available in JDK21")
     @Test
     fun testMavenDependentJarUrls() {
         val path = Path.of("for.testing")
@@ -39,7 +36,6 @@ class MavenRepositoryPathTest {
         MavenRepositoryPath(path).mavenDependentJarUrls() shouldBe expected
     }
 
-    @Disabled("Enable this test when mockkStatic is available in JDK21")
     @Test
     fun testMavenDependentJarUrlsThrowsExceptions() {
         val path = Path.of("for.testing.of.some.exception")
