@@ -1,16 +1,15 @@
 package dev.iwhammy.gauge.annotations
 
-import dev.iwhammy.gauge.annotations.domain.CompileClasspathFactory
-import dev.iwhammy.gauge.annotations.domain.GaugeAnnotationClassLoaderFactory
-import dev.iwhammy.gauge.annotations.domain.MavenRepositoryPathFactory
+import dev.iwhammy.gauge.annotations.domain.*
 import dev.iwhammy.gauge.annotations.driver.JsonStandardOutputDriver
-import dev.iwhammy.gauge.annotations.usecase.OutputPort
 import dev.iwhammy.gauge.annotations.usecase.StepCollectUseCase
+import dev.iwhammy.gauge.annotations.usecase.port.OutputPort
 import org.apache.maven.plugin.AbstractMojo
 import org.apache.maven.plugins.annotations.LifecyclePhase
 import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
+import java.net.URLClassLoader
 
 @Mojo(name = "gauge-annotation", defaultPhase = LifecyclePhase.PACKAGE)
 class GaugeAnnotationMojo() : AbstractMojo() {
@@ -21,30 +20,15 @@ class GaugeAnnotationMojo() : AbstractMojo() {
     private val mavenRepositoryPath = "${System.getProperty("user.home")}/.m2/repository"
 
     private val mavenRepositoryPathFactory: MavenRepositoryPathFactory = MavenRepositoryPathFactory()
-    private val compileClasspathFactory: CompileClasspathFactory = CompileClasspathFactory()
     private val gaugeAnnotationClassLoaderFactory: GaugeAnnotationClassLoaderFactory =
         GaugeAnnotationClassLoaderFactory()
     private val outputPort: OutputPort = JsonStandardOutputDriver()
 
     override fun execute() {
-        val mavenProjectConfig = MavenProjectConfig.of(mavenRepositoryPath, project)
         StepCollectUseCase(
             outputPort,
-            mavenProjectConfig,
-            mavenRepositoryPathFactory,
-            compileClasspathFactory,
-            gaugeAnnotationClassLoaderFactory
+            project.compileClasspathElements.map { CompileClasspath(it) },
+            gaugeAnnotationClassLoaderFactory.create(project.compileClasspathElements.map { CompileClasspath(it) }, mavenRepositoryPathFactory.create(mavenRepositoryPath))
         ).execute()
-    }
-}
-
-class MavenProjectConfig private constructor(
-    val mavenRepositoryPath: String,
-    val compileClasspaths: List<String>,
-) {
-    companion object {
-        fun of(mavenRepositoryPath: String, project: MavenProject): MavenProjectConfig {
-            return MavenProjectConfig(mavenRepositoryPath, project.compileClasspathElements)
-        }
     }
 }

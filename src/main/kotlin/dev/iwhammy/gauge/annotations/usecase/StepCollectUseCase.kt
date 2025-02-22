@@ -1,21 +1,19 @@
 package dev.iwhammy.gauge.annotations.usecase
 
-import dev.iwhammy.gauge.annotations.MavenProjectConfig
-import dev.iwhammy.gauge.annotations.domain.*
+import dev.iwhammy.gauge.annotations.domain.CompileClasspath
+import dev.iwhammy.gauge.annotations.domain.GaugeAnnotationClassLoader
+import dev.iwhammy.gauge.annotations.domain.Report
+import dev.iwhammy.gauge.annotations.domain.collectClassNamesInPath
+import dev.iwhammy.gauge.annotations.usecase.port.OutputPort
 
 class StepCollectUseCase(
     private val outputPort: OutputPort,
-    private val mavenProjectConfig: MavenProjectConfig,
-    private val mavenRepositoryPathFactory: MavenRepositoryPathFactory,
-    private val compileClasspathFactory: CompileClasspathFactory,
-    private val gaugeAnnotationClassLoaderFactory: GaugeAnnotationClassLoaderFactory,
+    private val compileClasspaths: List<CompileClasspath>,
+    private val gaugeAnnotationClassLoader: GaugeAnnotationClassLoader,
 ) {
     fun execute() {
-        val mavenRepositoryPath = mavenRepositoryPathFactory.create(mavenProjectConfig.mavenRepositoryPath)
-        val compileClasspaths = compileClasspathFactory.create(mavenProjectConfig.compileClasspaths)
         val classNames = compileClasspaths.collectClassNamesInPath()
-        val report = mavenRepositoryPath
-            .let { gaugeAnnotationClassLoaderFactory.create(compileClasspaths, it) }
+        val report = gaugeAnnotationClassLoader
             .collectProjectAnnotations(classNames)
             .let { Report.of(it) }
         when (report) {

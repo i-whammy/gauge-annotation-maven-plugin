@@ -6,16 +6,13 @@ import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
 
-data class CompileClasspath(private val classpath: String) {
+data class CompileClasspath(val classpath: String) {
     fun collectClassNamesInPath(): List<String> = Path.of(classpath).collectClassNames()
-    fun urlOf(): URL = Path.of(this.classpath).toUri().toURL()
 }
+
+fun CompileClasspath.urlOf(): URL = Path.of(this.classpath).toUri().toURL()
 
 fun List<CompileClasspath>.collectClassNamesInPath(): List<String> = this.flatMap { it.collectClassNamesInPath() }
-
-class CompileClasspathFactory {
-    fun create(classpaths: List<String>) = classpaths.map { CompileClasspath(it) }
-}
 
 fun Path.collectClassNames(): List<String> {
     try {

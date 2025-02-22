@@ -18,15 +18,3 @@ class GaugeAnnotationClassLoader(private val urlClassLoader: URLClassLoader) {
         return GaugeProjectUsage(gaugeClassUsages)
     }
 }
-
-class GaugeAnnotationClassLoaderFactory {
-    fun create(
-        compileClasspaths: List<CompileClasspath>,
-        mavenRepositoryPath: MavenRepositoryPath
-    ): GaugeAnnotationClassLoader {
-        return compileClasspaths.map { it.urlOf() }
-            .plus(mavenRepositoryPath.mavenDependentJarUrls())
-            .toTypedArray()
-            .let { GaugeAnnotationClassLoader(URLClassLoader(it)) }
-    }
-}

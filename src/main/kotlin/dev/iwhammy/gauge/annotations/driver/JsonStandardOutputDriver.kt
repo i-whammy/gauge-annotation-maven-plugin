@@ -1,7 +1,7 @@
 package dev.iwhammy.gauge.annotations.driver
 
 import dev.iwhammy.gauge.annotations.domain.Report
-import dev.iwhammy.gauge.annotations.usecase.OutputPort
+import dev.iwhammy.gauge.annotations.usecase.port.OutputPort
 import jakarta.json.Json
 import jakarta.json.JsonObject
 
