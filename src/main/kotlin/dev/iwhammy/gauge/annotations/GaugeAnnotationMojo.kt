@@ -25,10 +25,12 @@ class GaugeAnnotationMojo() : AbstractMojo() {
     private val outputPort: OutputPort = JsonStandardOutputDriver()
 
     override fun execute() {
+        val compileClasspaths = project.compileClasspathElements.map { CompileClasspath(it) }
         StepCollectUseCase(
             outputPort,
-            project.compileClasspathElements.map { CompileClasspath(it) },
-            gaugeAnnotationClassLoaderFactory.create(project.compileClasspathElements.map { CompileClasspath(it) }, mavenRepositoryPathFactory.create(mavenRepositoryPath))
+            compileClasspaths,
+            gaugeAnnotationClassLoaderFactory.create(compileClasspaths,
+                mavenRepositoryPathFactory.create(mavenRepositoryPath))
         ).execute()
     }
 }
