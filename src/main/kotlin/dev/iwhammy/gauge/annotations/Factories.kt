@@ -4,7 +4,7 @@ import dev.iwhammy.gauge.annotations.domain.*
 import java.net.URLClassLoader
 import java.nio.file.Path
 
-class MavenRepositoryPathFactory {
+object MavenRepositoryPathFactory {
     fun create(path: String): MavenRepositoryPath {
         return runCatching { Path.of(path) }
             .fold(
@@ -14,7 +14,7 @@ class MavenRepositoryPathFactory {
     }
 }
 
-class GaugeAnnotationClassLoaderFactory {
+object GaugeAnnotationClassLoaderFactory {
     fun create(
         compileClasspaths: List<CompileClasspath>,
         mavenRepositoryPath: MavenRepositoryPath

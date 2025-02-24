@@ -46,14 +46,14 @@ class StepCollectUseCaseTest {
         val compileClasspaths = listOf(mockk<CompileClasspath>())
         val gaugeAnnotationClassLoader = mockk<GaugeAnnotationClassLoader>()
 
-        val stepCollectUseCase = StepCollectUseCase(outputPort, compileClasspaths, gaugeAnnotationClassLoader)
+        val stepCollectUseCase = StepCollectUseCase(outputPort)
 
         mockkStatic(List<CompileClasspath>::collectClassNamesInPath)
         every { compileClasspaths.collectClassNamesInPath() } returns classNames
         every { gaugeAnnotationClassLoader.collectProjectAnnotations(classNames) } returns stepValues
         every { outputPort.output(any<Report.GaugeUsageReport>()) } just Runs
 
-        stepCollectUseCase.execute()
+        stepCollectUseCase.execute(compileClasspaths, gaugeAnnotationClassLoader)
 
         verify {
             outputPort.output(any<Report.GaugeUsageReport>())

@@ -8,10 +8,11 @@ import dev.iwhammy.gauge.annotations.usecase.port.OutputPort
 
 class StepCollectUseCase(
     private val outputPort: OutputPort,
-    private val compileClasspaths: List<CompileClasspath>,
-    private val gaugeAnnotationClassLoader: GaugeAnnotationClassLoader,
 ) {
-    fun execute() {
+    fun execute(
+        compileClasspaths: List<CompileClasspath>,
+        gaugeAnnotationClassLoader: GaugeAnnotationClassLoader,
+    ) {
         val classNames = compileClasspaths.collectClassNamesInPath()
         val report = gaugeAnnotationClassLoader
             .collectProjectAnnotations(classNames)
