@@ -10,7 +10,7 @@ import org.apache.maven.plugins.annotations.Mojo
 import org.apache.maven.plugins.annotations.Parameter
 import org.apache.maven.project.MavenProject
 
-@Mojo(name = "gauge-annotation", defaultPhase = LifecyclePhase.PACKAGE)
+@Mojo(name = "gauge-annotation", defaultPhase = LifecyclePhase.INSTALL)
 class GaugeAnnotationMojo() : AbstractMojo() {
 
     @Parameter(property = "project")
