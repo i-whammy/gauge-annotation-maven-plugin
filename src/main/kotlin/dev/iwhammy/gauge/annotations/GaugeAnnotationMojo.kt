@@ -1,7 +1,7 @@
 package dev.iwhammy.gauge.annotations
 
 import dev.iwhammy.gauge.annotations.domain.CompileClasspath
-import dev.iwhammy.gauge.annotations.driver.MarkdownStandardOutputDriver
+import dev.iwhammy.gauge.annotations.driver.JsonStandardOutputDriver
 import dev.iwhammy.gauge.annotations.usecase.StepCollectUseCase
 import dev.iwhammy.gauge.annotations.usecase.port.OutputPort
 import org.apache.maven.plugin.AbstractMojo
@@ -18,7 +18,7 @@ class GaugeAnnotationMojo() : AbstractMojo() {
 
     private val mavenRepositoryPath = "${System.getProperty("user.home")}/.m2/repository"
 
-    private val outputPort: OutputPort = MarkdownStandardOutputDriver()
+    private val outputPort: OutputPort = JsonStandardOutputDriver()
 
     override fun execute() {
         val compileClasspaths = project.compileClasspathElements.map { CompileClasspath(it) }
